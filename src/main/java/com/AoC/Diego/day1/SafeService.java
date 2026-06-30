@@ -2,12 +2,22 @@ package com.AoC.Diego.day1;
 
 import java.util.List;
 
+/**
+ * Servicio encargado de calcular la contraseña de la caja fuerte
+ * a partir de una secuencia de rotaciones.
+ */
 public class SafeService {
 
     private static final int MAX = 100;
     private static final int START = 50;
 
-    // ---------- PARTE 1 ----------
+    /**
+     * Calcula la contraseña contando únicamente las rotaciones
+     * que terminan en la posición 0.
+     *
+     * @param rotations secuencia de rotaciones del dial.
+     * @return número de rotaciones cuya posición final es 0.
+     */
     public int getPassword(List<Rotation> rotations) {
 
         int position = START;
@@ -25,7 +35,13 @@ public class SafeService {
         return password;
     }
 
-    // ---------- PARTE 2 ----------
+    /**
+     * Calcula la contraseña contando todas las veces que el dial
+     * pasa por la posición 0 durante las rotaciones.
+     *
+     * @param rotations secuencia de rotaciones del dial.
+     * @return número de veces que el dial pasa por la posición 0.
+     */
     public int getPasswordMethod2(List<Rotation> rotations) {
 
         int position = START;

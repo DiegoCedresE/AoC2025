@@ -1,17 +1,31 @@
 package com.AoC.Diego.day6;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Analiza la hoja de entrada y la convierte en una lista de problemas.
+ */
 public class WorksheetParser {
-
+    /**
+     * Analiza la entrada con el formato de la primera parte.
+     *
+     * @param input contenido de la hoja.
+     * @return lista de problemas obtenidos.
+     */
     public List<Problem> parsePart1(String input) {
         return parse(input, false);
     }
-
+    /**
+     * Analiza la entrada con el formato de la segunda parte.
+     *
+     * @param input contenido de la hoja.
+     * @return lista de problemas obtenidos.
+     */
     public List<Problem> parsePart2(String input) {
         return parse(input, true);
     }
-
+    /**
+     * Obtiene la longitud de la línea más larga.
+     */
     private int maxWidth(String[] lines) {
         int max = 0;
         for (String line : lines) {
@@ -19,7 +33,9 @@ public class WorksheetParser {
         }
         return max;
     }
-
+    /**
+     * Comprueba si una columna está vacía en todas las filas.
+     */
     private boolean isEmpty(String[] lines, int col) {
         for (String line : lines) {
             if (col < line.length() && line.charAt(col) != ' ') {
@@ -28,9 +44,10 @@ public class WorksheetParser {
         }
         return true;
     }
-
+    /**
+     * Obtiene el operador asociado a un bloque de la hoja.
+     */
     private char readOp(String lastLine, int index) {
-        // Buscamos de izquierda a derecha todos los operadores disponibles en la última fila
         List<Character> operators = new ArrayList<>();
         for (int c = 0; c < lastLine.length(); c++) {
             char ch = lastLine.charAt(c);
@@ -38,26 +55,27 @@ public class WorksheetParser {
                 operators.add(ch);
             }
         }
-
-        // Si por alguna razón el índice solicitado no existe, lanzamos la excepción
         if (index < operators.size()) {
             return operators.get(index);
         }
         throw new IllegalArgumentException("Operador no encontrado para el bloque " + index);
     }
-
+    /**
+     * Convierte la entrada en una lista de problemas.
+     */
     private List<Problem> parse(String input, boolean part2) {
         String[] lines = input.split("\\R");
         int width = maxWidth(lines);
         List<Problem> problems = new ArrayList<>();
         int col = 0;
-        int problemIndex = 0; // <--- Rastreador secuencial de bloques
-
+        int problemIndex = 0;
         while (col < width) {
             while (col < width && isEmpty(lines, col)) {
                 col++;
             }
-            if (col >= width) break;
+            if (col >= width) {
+                break;
+            }
             int start = col;
             while (col < width && !isEmpty(lines, col)) {
                 col++;
@@ -66,53 +84,38 @@ public class WorksheetParser {
             List<Long> numbers = part2
                     ? readPart2(lines, start, end)
                     : readPart1(lines, start, end);
-
-            // Le pasamos la última línea y el número de bloque actual
             char op = readOp(lines[lines.length - 1], problemIndex);
             problems.add(new Problem(numbers, op));
-
-            problemIndex++; // Avanzamos al siguiente bloque
+            problemIndex++;
         }
         return problems;
     }
-
-    // ---------------- PARTE 1 ----------------
-
+    /**
+     * Extrae los números de un bloque utilizando el formato de la primera parte.
+     */
     private List<Long> readPart1(String[] lines, int start, int end) {
-
         List<Long> nums = new ArrayList<>();
-
         for (int r = 0; r < lines.length - 1; r++) {
-
             StringBuilder sb = new StringBuilder();
-
             for (int c = start; c < end; c++) {
-
                 if (c < lines[r].length() && Character.isDigit(lines[r].charAt(c))) {
                     sb.append(lines[r].charAt(c));
                 }
             }
-
             if (sb.length() > 0) {
                 nums.add(Long.parseLong(sb.toString()));
             }
         }
-
         return nums;
     }
-
-    // ---------------- PARTE 2  ----------------
+    /**
+     * Extrae los números de un bloque utilizando el formato de la segunda parte.
+     */
     private List<Long> readPart2(String[] lines, int start, int end) {
-
         List<Long> result = new ArrayList<>();
-        int rows = lines.length - 1; // Excluimos la fila del operador
-
-        // 1. Recorremos las columnas del bloque de DERECHA a IZQUIERDA
+        int rows = lines.length - 1;
         for (int c = end - 1; c >= start; c--) {
-
             StringBuilder sb = new StringBuilder();
-
-            // 2. Para cada columna, leemos los dígitos de ARRIBA a ABAJO
             for (int r = 0; r < rows; r++) {
                 if (c < lines[r].length()) {
                     char ch = lines[r].charAt(c);
@@ -121,13 +124,10 @@ public class WorksheetParser {
                     }
                 }
             }
-
-            // 3. Si la columna contenía dígitos, formamos el número
             if (sb.length() > 0) {
                 result.add(Long.parseLong(sb.toString()));
             }
         }
-
         return result;
     }
 }

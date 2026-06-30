@@ -1,5 +1,9 @@
 package com.AoC.Diego.day2;
 
+/**
+ * Regla que considera inválidos los números formados por patrones repetidos.
+ * El comportamiento depende del modo seleccionado.
+ */
 public class RepeatedPatternRule implements InvalidRule {
 
     public enum Mode {
@@ -13,6 +17,12 @@ public class RepeatedPatternRule implements InvalidRule {
         this.mode = mode;
     }
 
+    /**
+     * Comprueba si un número es inválido según el modo configurado.
+     *
+     * @param number número a evaluar.
+     * @return {@code true} si el número incumple la regla; {@code false} en caso contrario.
+     */
     @Override
     public boolean isInvalid(long number) {
 
@@ -23,6 +33,9 @@ public class RepeatedPatternRule implements InvalidRule {
         return isPart2(number);
     }
 
+    /**
+     * En la parte 1, un número es inválido si está formado por dos mitades iguales.
+     */
     private boolean isPart1(long number) {
 
         String text = String.valueOf(number);
@@ -39,6 +52,10 @@ public class RepeatedPatternRule implements InvalidRule {
         return first.equals(second);
     }
 
+    /**
+     * En la parte 2, un número es inválido si está formado por la repetición
+     * de un mismo bloque de dígitos.
+     */
     private boolean isPart2(long number) {
 
         String text = String.valueOf(number);
